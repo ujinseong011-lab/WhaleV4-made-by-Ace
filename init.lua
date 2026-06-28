@@ -22,252 +22,116 @@ local function createGui(config)
 	end
 
 	local screenGui = Instance.new('ScreenGui')
-	screenGui.Name = 'WhaleV4Gui'
+	screenGui.Name = 'VapeV4Gui'
 	screenGui.ResetOnSpawn = false
 	screenGui.Parent = playerGui
 
 	local main = Instance.new('Frame')
-	main.Size = UDim2.fromOffset(420, 320)
+	main.Size = UDim2.fromOffset(380, 300)
 	main.Position = UDim2.new(0.02, 0, 0.02, 0)
-	main.BackgroundColor3 = Color3.fromRGB(18, 20, 26)
+	main.BackgroundColor3 = Color3.fromRGB(12, 14, 20)
 	main.BorderSizePixel = 0
 	main.Parent = screenGui
 
-	local mainCorner = Instance.new('UICorner')
-	mainCorner.CornerRadius = UDim.new(0, 18)
-	mainCorner.Parent = main
+	local corner = Instance.new('UICorner')
+	corner.CornerRadius = UDim.new(0, 16)
+	corner.Parent = main
 
-	local accent = Instance.new('Frame')
-	accent.Size = UDim2.new(1, 0, 0, 6)
-	accent.BackgroundColor3 = Color3.fromRGB(102, 111, 255)
-	accent.BorderSizePixel = 0
-	accent.Parent = main
+	local header = Instance.new('Frame')
+	header.Size = UDim2.new(1, 0, 0, 64)
+	header.BackgroundColor3 = Color3.fromRGB(18, 21, 29)
+	header.BorderSizePixel = 0
+	header.Parent = main
 
-	local leftPane = Instance.new('Frame')
-	leftPane.Size = UDim2.new(0, 130, 1, -12)
-	leftPane.Position = UDim2.new(0, 10, 0, 10)
-	leftPane.BackgroundColor3 = Color3.fromRGB(24, 27, 36)
-	leftPane.BorderSizePixel = 0
-	leftPane.Parent = main
+	local hcorner = Instance.new('UICorner')
+	hcorner.CornerRadius = UDim.new(0, 16)
+	hcorner.Parent = header
 
-	local leftCorner = Instance.new('UICorner')
-	leftCorner.CornerRadius = UDim.new(0, 14)
-	leftCorner.Parent = leftPane
+	local glow = Instance.new('Frame')
+	glow.Size = UDim2.new(1, 0, 0, 2)
+	glow.Position = UDim2.new(0, 0, 1, -2)
+	glow.BackgroundColor3 = Color3.fromRGB(88, 145, 255)
+	glow.BorderSizePixel = 0
+	glow.Parent = header
 
-	local logo = Instance.new('TextLabel')
-	logo.Size = UDim2.new(1, -20, 0, 32)
-	logo.Position = UDim2.new(0, 10, 0, 12)
-	logo.BackgroundTransparency = 1
-	logo.Text = 'RAVEN+'
-	logo.TextColor3 = Color3.fromRGB(240, 240, 255)
-	logo.Font = Enum.Font.GothamBold
-	logo.TextSize = 18
-	logo.TextXAlignment = Enum.TextXAlignment.Left
-	logo.Parent = leftPane
+	local title = Instance.new('TextLabel')
+	title.Size = UDim2.new(1, -20, 0, 24)
+	title.Position = UDim2.new(0, 10, 0, 8)
+	title.BackgroundTransparency = 1
+	title.Text = config.gui.title or 'VAPE V4'
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 18
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	title.Parent = header
 
-	local labelDesc = Instance.new('TextLabel')
-	labelDesc.Size = UDim2.new(1, -20, 0, 36)
-	labelDesc.Position = UDim2.new(0, 10, 0, 40)
-	labelDesc.BackgroundTransparency = 1
-	labelDesc.Text = 'BedWars toolkit'
-	labelDesc.TextColor3 = Color3.fromRGB(170, 170, 210)
-	labelDesc.Font = Enum.Font.Gotham
-	labelDesc.TextSize = 12
-	labelDesc.TextXAlignment = Enum.TextXAlignment.Left
-	labelDesc.TextYAlignment = Enum.TextYAlignment.Top
-	labelDesc.Parent = leftPane
+	local subtitle = Instance.new('TextLabel')
+	subtitle.Size = UDim2.new(1, -20, 0, 18)
+	subtitle.Position = UDim2.new(0, 10, 0, 34)
+	subtitle.BackgroundTransparency = 1
+	subtitle.Text = ('Creator: %s | %s'):format(config.creator, config.creatorLabel)
+	subtitle.TextColor3 = Color3.fromRGB(160, 170, 186)
+	subtitle.Font = Enum.Font.Gotham
+	subtitle.TextSize = 12
+	subtitle.TextXAlignment = Enum.TextXAlignment.Left
+	subtitle.Parent = header
 
-	local tabContainer = Instance.new('Frame')
-	tabContainer.Size = UDim2.new(1, -20, 1, -96)
-	tabContainer.Position = UDim2.new(0, 10, 0, 82)
-	tabContainer.BackgroundTransparency = 1
-	tabContainer.Parent = leftPane
+	local container = Instance.new('ScrollingFrame')
+	container.Size = UDim2.new(1, -16, 1, -80)
+	container.Position = UDim2.new(0, 8, 0, 72)
+	container.BackgroundTransparency = 1
+	container.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	container.ScrollBarThickness = 2
+	container.Parent = main
 
-	local tabLayout = Instance.new('UIListLayout')
-	tabLayout.Padding = UDim.new(0, 8)
-	tabLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-	tabLayout.Parent = tabContainer
+	local layout = Instance.new('UIListLayout')
+	layout.Padding = UDim.new(0, 7)
+	layout.Parent = container
 
-	local sidebarTabs = {
-		Features = 'Features',
-		Info = 'Info',
-	}
+	for _, featureName in ipairs(config.gui.featureOrder) do
+		local enabled = config.features[featureName] ~= false
+		local row = Instance.new('Frame')
+		row.Size = UDim2.new(1, -4, 0, 34)
+		row.BackgroundColor3 = Color3.fromRGB(24, 28, 36)
+		row.BorderSizePixel = 0
+		row.Parent = container
 
-	local selectedTab = 'Features'
-	local content = Instance.new('Frame')
-	content.Size = UDim2.new(1, -158, 1, -20)
-	content.Position = UDim2.new(0, 148, 0, 10)
-	content.BackgroundColor3 = Color3.fromRGB(22, 25, 33)
-	content.BorderSizePixel = 0
-	content.Parent = main
+		local rowCorner = Instance.new('UICorner')
+		rowCorner.CornerRadius = UDim.new(0, 9)
+		rowCorner.Parent = row
 
-	local contentCorner = Instance.new('UICorner')
-	contentCorner.CornerRadius = UDim.new(0, 14)
-	contentCorner.Parent = content
+		local label = Instance.new('TextLabel')
+		label.Size = UDim2.new(1, -86, 1, 0)
+		label.Position = UDim2.new(0, 10, 0, 0)
+		label.BackgroundTransparency = 1
+		label.Text = featureName
+		label.TextColor3 = Color3.fromRGB(242, 242, 242)
+		label.Font = Enum.Font.Gotham
+		label.TextSize = 12
+		label.TextXAlignment = Enum.TextXAlignment.Left
+		label.Parent = row
 
-	local contentHeader = Instance.new('TextLabel')
-	contentHeader.Size = UDim2.new(1, -24, 0, 28)
-	contentHeader.Position = UDim2.new(0, 12, 0, 12)
-	contentHeader.BackgroundTransparency = 1
-	contentHeader.Text = 'Features'
-	contentHeader.TextColor3 = Color3.fromRGB(240, 240, 240)
-	contentHeader.Font = Enum.Font.GothamBold
-	contentHeader.TextSize = 16
-	contentHeader.TextXAlignment = Enum.TextXAlignment.Left
-	contentHeader.Parent = content
+		local toggle = Instance.new('TextButton')
+		toggle.Size = UDim2.new(0, 56, 0, 22)
+		toggle.Position = UDim2.new(1, -62, 0.5, -11)
+		toggle.BackgroundColor3 = enabled and Color3.fromRGB(74, 182, 107) or Color3.fromRGB(154, 74, 74)
+		toggle.BorderSizePixel = 0
+		toggle.Text = enabled and 'ON' or 'OFF'
+		toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+		toggle.Font = Enum.Font.GothamBold
+		toggle.TextSize = 11
+		toggle.Parent = row
 
-	local contentSub = Instance.new('TextLabel')
-	contentSub.Size = UDim2.new(1, -24, 0, 18)
-	contentSub.Position = UDim2.new(0, 12, 0, 36)
-	contentSub.BackgroundTransparency = 1
-	contentSub.Text = 'Toggle modules and launch settings.'
-	contentSub.TextColor3 = Color3.fromRGB(160, 170, 190)
-	contentSub.Font = Enum.Font.Gotham
-	contentSub.TextSize = 12
-	contentSub.TextXAlignment = Enum.TextXAlignment.Left
-	contentSub.Parent = content
+		local toggleCorner = Instance.new('UICorner')
+		toggleCorner.CornerRadius = UDim.new(0, 6)
+		toggleCorner.Parent = toggle
 
-	local contentArea = Instance.new('Frame')
-	contentArea.Size = UDim2.new(1, -24, 1, -70)
-	contentArea.Position = UDim2.new(0, 12, 0, 58)
-	contentArea.BackgroundTransparency = 1
-	contentArea.Parent = content
-
-	local function clearChildren(frame)
-		for _, child in ipairs(frame:GetChildren()) do
-			if not child:IsA('UIListLayout') then
-				child:Destroy()
-			end
-		end
-	end
-
-	local function buildFeatureList()
-		clearChildren(contentArea)
-		local list = Instance.new('ScrollingFrame')
-		list.Size = UDim2.new(1, 0, 1, 0)
-		list.BackgroundTransparency = 1
-		list.ScrollBarThickness = 2
-		list.AutomaticCanvasSize = Enum.AutomaticSize.Y
-		list.Parent = contentArea
-
-		local layout = Instance.new('UIListLayout')
-		layout.Padding = UDim.new(0, 8)
-		layout.Parent = list
-
-		for _, featureName in ipairs(config.gui.featureOrder) do
-			local enabled = config.features[featureName] ~= false
-			local row = Instance.new('Frame')
-			row.Size = UDim2.new(1, 0, 0, 36)
-			row.BackgroundColor3 = Color3.fromRGB(26, 30, 40)
-			row.BorderSizePixel = 0
-			row.Parent = list
-
-			local corner = Instance.new('UICorner')
-			corner.CornerRadius = UDim.new(0, 10)
-			corner.Parent = row
-
-			local label = Instance.new('TextLabel')
-			label.Size = UDim2.new(1, -92, 1, 0)
-			label.Position = UDim2.new(0, 14, 0, 0)
-			label.BackgroundTransparency = 1
-			label.Text = featureName
-			label.TextColor3 = Color3.fromRGB(242, 242, 242)
-			label.Font = Enum.Font.Gotham
-			label.TextSize = 13
-			label.TextXAlignment = Enum.TextXAlignment.Left
-			label.Parent = row
-
-			local toggle = Instance.new('TextButton')
-			toggle.Size = UDim2.new(0, 70, 0, 24)
-			toggle.Position = UDim2.new(1, -84, 0.5, -12)
-			toggle.BackgroundColor3 = enabled and Color3.fromRGB(92, 195, 123) or Color3.fromRGB(168, 82, 82)
-			toggle.BorderSizePixel = 0
-			toggle.Text = enabled and 'ENABLED' or 'DISABLED'
-			toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-			toggle.Font = Enum.Font.GothamBold
-			toggle.TextSize = 11
-			toggle.Parent = row
-
-			local tcorner = Instance.new('UICorner')
-			tcorner.CornerRadius = UDim.new(0, 9)
-			tcorner.Parent = toggle
-
-			toggle.MouseButton1Click:Connect(function()
-				config.features[featureName] = not config.features[featureName]
-				toggle.Text = config.features[featureName] and 'ENABLED' or 'DISABLED'
-				toggle.BackgroundColor3 = config.features[featureName] and Color3.fromRGB(92, 195, 123) or Color3.fromRGB(168, 82, 82)
-			end)
-		end
-	end
-
-	local function buildInfo()
-		clearChildren(contentArea)
-		local infoFrame = Instance.new('Frame')
-		infoFrame.Size = UDim2.new(1, 0, 1, 0)
-		infoFrame.BackgroundTransparency = 1
-		infoFrame.Parent = contentArea
-
-		local infoLabels = {
-			('Version: %s'):format(config.name),
-			('Environment: %s'):format(config.executor.name),
-			('Game: %s'):format(config.game),
-			('Creator ID: %s'):format(config.creator),
-			('Loaded modules: %d'):format(#config.gui.featureOrder),
-		}
-
-		for index, text in ipairs(infoLabels) do
-			local label = Instance.new('TextLabel')
-			label.Size = UDim2.new(1, -20, 0, 26)
-			label.Position = UDim2.new(0, 10, 0, (index - 1) * 32)
-			label.BackgroundTransparency = 1
-			label.Text = text
-			label.TextColor3 = Color3.fromRGB(220, 220, 255)
-			label.Font = Enum.Font.Gotham
-			label.TextSize = 12
-			label.TextXAlignment = Enum.TextXAlignment.Left
-			label.Parent = infoFrame
-		end
-	end
-
-	local function selectTab(tabName)
-		selectedTab = tabName
-		for _, child in ipairs(tabContainer:GetChildren()) do
-			if child:IsA('TextButton') then
-				child.BackgroundColor3 = child.Name == tabName and Color3.fromRGB(88, 145, 255) or Color3.fromRGB(28, 32, 42)
-				child.TextColor3 = child.Name == tabName and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(180, 180, 190)
-			end
-		end
-		contentHeader.Text = tabName
-		contentSub.Text = tabName == 'Features' and 'Toggle modules and launch settings.' or 'Runtime information and executor status.'
-		if tabName == 'Features' then
-			buildFeatureList()
-		else
-			buildInfo()
-		end
-	end
-
-	for tabName, display in pairs(sidebarTabs) do
-		local tabButton = Instance.new('TextButton')
-		tabButton.Name = tabName
-		tabButton.Size = UDim2.new(1, 0, 0, 34)
-		tabButton.BackgroundColor3 = tabName == selectedTab and Color3.fromRGB(88, 145, 255) or Color3.fromRGB(28, 32, 42)
-		tabButton.BorderSizePixel = 0
-		tabButton.Text = display
-		tabButton.TextColor3 = tabName == selectedTab and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(190, 190, 210)
-		tabButton.Font = Enum.Font.GothamBold
-		tabButton.TextSize = 12
-		tabButton.Parent = tabContainer
-
-		local tabCorner = Instance.new('UICorner')
-		tabCorner.CornerRadius = UDim.new(0, 10)
-		tabCorner.Parent = tabButton
-
-		tabButton.MouseButton1Click:Connect(function()
-			selectTab(tabName)
+		toggle.MouseButton1Click:Connect(function()
+			config.features[featureName] = not config.features[featureName]
+			toggle.Text = config.features[featureName] and 'ON' or 'OFF'
+			toggle.BackgroundColor3 = config.features[featureName] and Color3.fromRGB(74, 182, 107) or Color3.fromRGB(154, 74, 74)
 		end)
 	end
-
-	selectTab(selectedTab)
 
 	return screenGui
 end
@@ -316,7 +180,7 @@ local function applyExecutorCompat(config)
 end
 
 local defaultConfig = {
-	name = 'Whale V4',
+	name = 'VAPE V4',
 	creator = '381112395017410',
 	creatorLabel = 'Killaura Legit',
 	game = 'BedWars',
@@ -336,8 +200,8 @@ local defaultConfig = {
 		AutoWin = true,
 	},
 	gui = {
-		title = 'Whale V4',
-		subtitle = 'WHALE V4',
+		title = 'VAPE V4',
+		subtitle = 'VAPE V4',
 		showCreator = true,
 		showFeatures = true,
 		featureOrder = {
