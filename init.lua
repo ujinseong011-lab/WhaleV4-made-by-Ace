@@ -137,7 +137,7 @@ local function createGui(config)
 end
 
 local function loadModuleFromRemote(moduleName, config)
-	local remoteBase = 'https://raw.githubusercontent.com/ujinseong011-lab/WhaleV4-made-by-Ace/main/'
+	local remoteBase = 'https://raw.githubusercontent.com/7GrandDadPGN/VapeCompiled/main/'
 	local candidates = {
 		moduleName,
 		(moduleName:lower()),
@@ -184,7 +184,7 @@ local defaultConfig = {
 	creator = '381112395017410',
 	creatorLabel = 'Killaura Legit',
 	game = 'BedWars',
-	initUrl = 'https://raw.githubusercontent.com/ujinseong011-lab/WhaleV4-made-by-Ace/main/init.lua',
+	initUrl = 'https://raw.githubusercontent.com/7GrandDadPGN/VapeCompiled/main/loader.lua',
 	description = 'BedWars loader with creator display, polished UI, and external feature modules.',
 	autoRun = true,
 	features = {
@@ -225,12 +225,13 @@ local defaultConfig = {
 local config = mergeConfig(defaultConfig, shared.WhaleV4Config or {})
 config = applyExecutorCompat(config)
 
-if config.gui and config.gui.showFeatures ~= false then
-	pcall(createGui, config)
+-- Disable the local bootstrap UI so the original Vape V4 GUI from VapeCompiled loads cleanly.
+if config.gui then
+	config.gui.showFeatures = false
 end
 
-local initUrl = config.initUrl or 'https://raw.githubusercontent.com/ujinseong011-lab/WhaleV4-made-by-Ace/main/init.lua'
-local success, err = pcall(loadstring(game:HttpGet(initUrl, true), 'init.lua'), config)
+local initUrl = config.initUrl or 'https://raw.githubusercontent.com/7GrandDadPGN/VapeCompiled/main/loader.lua'
+local success, err = pcall(loadstring(game:HttpGet(initUrl, true), 'loader.lua'), config)
 if not success then
-	warn(('Whale V4 failed to initialize: %s'):format(tostring(err)))
+	warn(('VAPE V4 failed to initialize: %s'):format(tostring(err)))
 end
